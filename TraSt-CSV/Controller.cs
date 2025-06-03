@@ -52,7 +52,7 @@ namespace TraSt_CSV {
             _abortListener = new StreamingAbortListener() {                                                 // Create a listener for aborted streaming
                 Streaming = _streaming
             };
-            _abortListener.Start();                                                                          // Start listening for abort key ('q') presses in a separate thread.
+            _abortListener.Start();                                                                          // Start listening for abort key ('q' or 'ESC') presses in a separate thread.
         }
 
         public void StreamCSV() {
