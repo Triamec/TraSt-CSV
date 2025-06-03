@@ -1,6 +1,4 @@
 ﻿// Copyright © 2025 Triamec Motion AG
-using Triamec.Tam;
-using Triamec.TriaLink.Adapter;
 
 namespace TraSt_CSV {
     internal class Program {

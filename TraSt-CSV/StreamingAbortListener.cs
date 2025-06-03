@@ -1,4 +1,6 @@
-﻿using Triamec.Tam;
+﻿// Copyright © 2025 Triamec Motion AG
+
+using Triamec.Tam;
 
 
 namespace TraSt_CSV {
