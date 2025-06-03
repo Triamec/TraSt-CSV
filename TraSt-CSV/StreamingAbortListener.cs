@@ -28,7 +28,7 @@ namespace TraSt_CSV {
         }
 
         private void ListenForAbortKey() {
-            while (true) {
+            while (!IsAborted) {
                 var key = Console.ReadKey(intercept: true);
                 if (key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) {
                     Console.WriteLine("\n\nAborted streaming safely by pressing 'q or 'ESC'.");
