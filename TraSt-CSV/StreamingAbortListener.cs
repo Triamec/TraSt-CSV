@@ -21,14 +21,14 @@ namespace TraSt_CSV {
             };
             _inputThread.Start();
 
-            Console.WriteLine("\n\nStreaming can always be aborted by pressing the key \"q\".");
+            Console.WriteLine("\n\nStreaming can always be aborted by pressing the key 'q' or 'ESC'.");
         }
 
         private void ListenForAbortKey() {
             while (true) {
                 var key = Console.ReadKey(intercept: true);
-                if (key.KeyChar == 'q') {
-                    Console.WriteLine("\n\nAborted streaming safely by pressing 'q'...");
+                if (key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) {
+                    Console.WriteLine("\n\nAborted streaming safely by pressing 'q or 'ESC'.");
                     Streaming.Stop();
                     AbortedByQ = true;
                     break;
