@@ -7,15 +7,16 @@ namespace TraSt_CSV {
     internal class StreamingAbortListener {
         public required TrajectoryStreaming Streaming { get; init; }
         private Thread? _inputThread;
-        public bool AbortedByQ { get; private set; } = false;
-        public bool AbortedByError { get; private set; } = false;
+        private bool AbortedByQ { get; set; } = false;
+        private bool AbortedByError { get; set; } = false;
+
+        public bool IsAborted => AbortedByQ || AbortedByError;
 
         public void AbortByError() {
             AbortedByError = true;
             Streaming.Stop();
             Console.WriteLine("\nAborted streaming due to error...");
         }
-        public bool IsAborted => AbortedByQ || AbortedByError;
 
         public void Start() {
             _inputThread = new Thread(ListenForAbortKey) {
