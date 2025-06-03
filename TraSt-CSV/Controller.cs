@@ -49,7 +49,6 @@ namespace TraSt_CSV {
                 ContinousMode = false,
                 Redundance = true
             };
-
             _abortListener = new StreamingAbortListener() {                                                 // Create a listener for aborted streaming
                 Streaming = _streaming
             };
