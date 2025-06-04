@@ -41,7 +41,7 @@ In the System Explorer, the head is shown in black — always a bit ahead — an
 - It is reccomended to visualize the behaviour of the application in the  [TAM Software](https://www.triamec.com/en/tam-software-support.html) installation
 
 ## Operate the TraSt-CSV Application
-The TraSt-CSV application is a command-line tool that initializes the TAM system and streams a trajcetory path from a CSV file to multiple motion axes. It consists the following core components:
+The TraSt-CSV application is a command-line tool that initializes the TAM system and streams a trajectory path from a CSV file to multiple motion axes. It consists the following core components:
 - **Program:** Serves as the entry point of the application
 - **Controller:** Orchestrates the main workflow. It initializes the TAM system, sets up the axis group, and coordinates the streaming of trajectory data. It relies on helper classes (CsvParser and StreamingAbortListener) to perform specific tasks.
 - **CsvParser:** Handles reading and parsing of the CSV file. It extracts header metadata and provides access to the trajectory data in segments for streaming.
