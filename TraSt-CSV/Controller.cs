@@ -5,7 +5,7 @@ using Triamec.TriaLink.Adapter;
 namespace TraSt_CSV {
     internal class Controller {
         const double _streamRate = 50000;
-        const int _maxPointsPerSegment = 5000;                                                              // maximum number of points per segment
+        const int _maxPointsPerSegment = 10000;                                                              // maximum number of points per segment
         const string _filePath = "TrajectoryStream_Test1.csv";
         readonly CsvParser _csvParser;
         readonly TrajectoryStreamingAxisGroups _axisGroup;
@@ -46,8 +46,6 @@ namespace TraSt_CSV {
                 AxisGroup = _axisGroup,                                                                     // define which group of axes should execute the streamed motion commands
                 StreamRate = (uint)_streamRate,                                                             // interval between streamed points in microseconds
                 Override = 100f,                                                                            // speed override in percent, 100% means the speed is not overridden
-                ContinousMode = false,
-                Redundance = true
             };
             _abortListener = new StreamingAbortListener() {                                                 // Create a listener for aborted streaming
                 Streaming = _streaming
@@ -63,9 +61,12 @@ namespace TraSt_CSV {
                 while (true && !_abortListener.IsAborted) {
                     try {
                         bool ok = _streaming.Move(positions, null, !_csvParser.HasMoreData());
-                        if (ok) { break; } else {                                                           // sending to streaming-buffer succeeded, proceed to next segment
+                        if (ok) {
+                            Console.WriteLine("Segment added in the streaming buffer.");
+                            break; 
+                        } else {                                                           // sending to streaming-buffer succeeded, proceed to next segment
                             Console.WriteLine("Streaming buffer full, waiting...");
-                            Thread.Sleep(10);                                                               // wait and retry if buffer is full
+                            Thread.Sleep(30);                                                               // wait and retry if buffer is full
                         }
                     } catch (Exception ex) {                                                                // if move throws error, mark as aborted due to error and exit
                         _abortListener.AbortByError(ex);
@@ -89,14 +90,12 @@ namespace TraSt_CSV {
 
             _axisGroup.Disable().WaitForSuccess(TimeSpan.FromSeconds(5));                                   // disable the axis group after streaming is completed
 
+            _abortListener.ListenToExit = true;
             while (true) {                                                                                  // wait for user to press e' to exit the application
-                var key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.E) {
+                if(_abortListener.Exit) {
                     break;
                 }
-                Thread.Sleep(100);
             }
-            Console.WriteLine(double.MinValue);
         }
     }
 }

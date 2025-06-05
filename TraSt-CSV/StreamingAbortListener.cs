@@ -1,6 +1,7 @@
 ﻿// Copyright © 2025 Triamec Motion AG
 
 using Triamec.Tam;
+using Triamec.TriaLink;
 
 
 namespace TraSt_CSV {
@@ -10,6 +11,17 @@ namespace TraSt_CSV {
         private bool AbortedByQ { get; set; } = false;
         private bool AbortedByError { get; set; } = false;
 
+        public bool Exit { get; private set; } = false;
+        private bool _listenToExit { get; set; } = false;
+        public bool ListenToExit {
+            get => _listenToExit;
+            set {
+                _listenToExit = value;
+                if(value == true) {
+                    Console.WriteLine("\nPress 'q' or 'ESC' to quit application.");
+                }
+            }
+        }
         public bool IsAborted => AbortedByQ || AbortedByError;
 
         public void AbortByError(Exception ex) {
@@ -30,11 +42,14 @@ namespace TraSt_CSV {
         private void ListenForAbortKey() {
             while (!IsAborted) {
                 var key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) {
+                if ((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && Streaming.IsStreaming && ListenToExit == false) {
                     Console.WriteLine("\n\nAborted streaming safely by pressing 'q or 'ESC'.");
                     Streaming.Stop();
                     AbortedByQ = true;
                     break;
+                }
+                if((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && ListenToExit) {
+                    Exit = true;
                 }
                 Thread.Sleep(100);
             }
