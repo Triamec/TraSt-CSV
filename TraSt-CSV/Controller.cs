@@ -68,7 +68,7 @@ namespace TraSt_CSV {
                             Thread.Sleep(10);                                                               // wait and retry if buffer is full
                         }
                     } catch (Exception ex) {                                                                // if move throws error, mark as aborted due to error and exit
-                        _abortListener.AbortByError();
+                        _abortListener.AbortByError(ex);
                         break;
                     }
                 }
@@ -88,6 +88,15 @@ namespace TraSt_CSV {
             }
 
             _axisGroup.Disable().WaitForSuccess(TimeSpan.FromSeconds(5));                                   // disable the axis group after streaming is completed
+
+            while (true) {                                                                                  // wait for user to press e' to exit the application
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.E) {
+                    break;
+                }
+                Thread.Sleep(100);
+            }
+            Console.WriteLine(double.MinValue);
         }
     }
 }

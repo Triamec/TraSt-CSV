@@ -12,10 +12,10 @@ namespace TraSt_CSV {
 
         public bool IsAborted => AbortedByQ || AbortedByError;
 
-        public void AbortByError() {
+        public void AbortByError(Exception ex) {
             AbortedByError = true;
             Streaming.Stop();
-            Console.WriteLine("\nAborted streaming due to error...");
+            Console.WriteLine($"\nAborted streaming due to error: {ex.Message}");
         }
 
         public void Start() {
@@ -24,7 +24,7 @@ namespace TraSt_CSV {
             };
             _inputThread.Start();
 
-            Console.WriteLine("\n\nStreaming can always be aborted by pressing the key 'q' or 'ESC'.");
+            Console.WriteLine("\nPress 'q' or 'ESC' to abort streaming.");
         }
 
         private void ListenForAbortKey() {
