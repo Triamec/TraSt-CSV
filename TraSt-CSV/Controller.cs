@@ -31,6 +31,7 @@ namespace TraSt_CSV {
             }
                                       
             for (int i = 0; i < _csvParser.columnsName.Count && i < allFoundAxes.Length; i++) {             // iterate through the found axes, but only to the number of columns in the CSV file                    
+                allFoundAxes[i].Drive.ResetFault();
                 _axisGroup.AddAxis(new TraStAxis(allFoundAxes[i]));                                         // create a new TraStAxis instance based on the found axis and add it to the axis group
                 Console.WriteLine($"...connection to {allFoundAxes[i].Name} of station {allFoundAxes[i].Drive.Station.Name} and add to axisGroup.");
             }
