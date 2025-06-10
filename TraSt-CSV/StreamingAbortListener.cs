@@ -46,7 +46,6 @@ namespace TraSt_CSV {
                     Console.WriteLine("\n\nAborted streaming safely by pressing 'q or 'ESC'.");
                     Streaming.Stop();
                     AbortedByQ = true;
-                    break;
                 }
                 if((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && ListenToExit) {
                     Exit = true;

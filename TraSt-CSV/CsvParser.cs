@@ -1,10 +1,15 @@
 ﻿// Copyright © 2025 Triamec Motion AG
 
+using System.Diagnostics;
+using System.Transactions;
+
 namespace TraSt_CSV {
     internal class CsvParser {
 
         public string? Profile { get; private set; }                                                        // Header-Line in csv file, which contains the profile name
-        public double? SamplingTime { get; private set; }                                                   // Header-Line in csv file, which contains the sampling time in seconds
+        public double? SamplingRate { get; private set; }                                                   // Header-Line in csv file, which contains the sampling rate in seconds
+        public double? Duration { get; private set; }                                                       // Header-Line in csv file, which contains the duration of the profile in seconds
+        public int NumberOfRows { get; private set; }                                                       // Header-Line in csv file, which contains the number of rows in the profile
         public List<string> columnsName { get; private set; } = new List<string>();
         private readonly StreamReader _reader;
 
@@ -26,22 +31,32 @@ namespace TraSt_CSV {
 
                 string trimmedLine = line.Trim();
 
-                if (!trimmedLine.StartsWith("//")) {                                                        // not a header line, so we stop reading the header
+                if (!trimmedLine.StartsWith("#")) {                                                         // not a header line, so we stop reading the header
                     break;
                 }
 
-                if (trimmedLine.StartsWith("// Profile:")) {                                                                        
-                    Profile = trimmedLine.Substring("// Profile:".Length).Trim();                           // extract and store the profile value after the prefix
+                if (trimmedLine.StartsWith("# Profile:")) {                                                                        
+                    Profile = trimmedLine.Substring("# Profile:".Length).Trim();                            // extract and store the profile value after the prefix
                 }
 
-                else if (trimmedLine.StartsWith("// SamplingTime:")) {                                      // extract sampling time string after prefix
-                    string samplingStr = trimmedLine.Substring("// SamplingTime:".Length).Trim();
-                    if (samplingStr.EndsWith("s")) {
-                        samplingStr = samplingStr.Substring(0, samplingStr.Length - 1);                     // remove trailing 's' if present (e.g. "5s" => "5")
+                else if (trimmedLine.StartsWith("# Sampling rate:")) {                                      // extract sampling time string after prefix
+                    string samplingStr = trimmedLine.Substring("# Sampling rate:".Length).Trim();
+                    if (samplingStr.EndsWith("Hz")) {
+                        samplingStr = samplingStr.Substring(0, samplingStr.Length - 2);                     // remove trailing 's' if present (e.g. "5s" => "5")
+                    }
+                    if (double.TryParse(samplingStr, out double tempSamplingRate)) {
+                        SamplingRate = tempSamplingRate;                                                    // parse the sampling rate and store it
                     }
                 }
+                
+                else if (trimmedLine.StartsWith("# Number of rows:")) {
+                    string numberOfRowsStr = trimmedLine.Substring("# Number of rows:".Length).Trim();
+                    if(int.TryParse(numberOfRowsStr, out int numberOfRows)) {
+                        NumberOfRows = numberOfRows;                                                        // parse the number of rows and store it
+                    }                                 
+                }
 
-                else if (trimmedLine.StartsWith("// Column")) {                                                                 
+                else if (trimmedLine.StartsWith("# Column")) {
                     int colonIndex = trimmedLine.IndexOf(':');                                              // find the index of ":" in "Column 1: XYZ"
                     if (colonIndex != -1 && (colonIndex + 1 < trimmedLine.Length)) {                        // index of ":" is found and there is text after it
                         string columnName = trimmedLine.Substring(colonIndex + 1).Trim();                   // extract and trim the column name
