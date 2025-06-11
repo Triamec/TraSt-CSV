@@ -15,6 +15,7 @@ The following image illustrates this workflow and shows the interaction between 
 
 ## View results in System Explorer
 Visualizing the results can make understanding easiert. The TAM System Explorer allows you to see, what happens inside the application. The following image shows two axes controlled by the application, moving along the precomputed trajectory path: 
+![TSE_Scope](./doc/TSE_Scope.png)
 
 **TODO: make a good CSV-File and take a snap of System explorer**
 
