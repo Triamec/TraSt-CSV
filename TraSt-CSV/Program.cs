@@ -2,13 +2,10 @@
 
 namespace TraSt_CSV {
     internal class Program {
-
-
-        static void Main(string[] args) {
-            Controller controller = new Controller();       // create a new instance of the Controller class
-            controller.Initialize();
-            controller.StreamCSV();                         // start the streaming of the CSV file
-
+        static void Main() {
+            Controller? controller = new();               // create a new instance of the Controller class
+            controller.Initialize().GetAwaiter().GetResult();       // initialize the controller (connect to motion system, prepare axis group and trajectory streamer)
+            controller.StreamCSV().GetAwaiter().GetResult();        // start the streaming of the CSV file
         }
     }
 }

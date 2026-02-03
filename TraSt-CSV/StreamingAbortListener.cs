@@ -1,32 +1,27 @@
 ﻿// Copyright © 2025 Triamec Motion AG
 
-using Triamec.Tam;
-using Triamec.TriaLink;
-
-
 namespace TraSt_CSV {
     internal class StreamingAbortListener {
-        public required TrajectoryStreaming Streaming { get; init; }
-        private Thread? _inputThread;
-        private bool AbortedByQ { get; set; } = false;
-        private bool AbortedByError { get; set; } = false;
-
-        public bool Exit { get; private set; } = false;
-        private bool _listenToExit { get; set; } = false;
+        Thread? _inputThread;
+        bool _abortedByUserInput;
+        bool _abortedByError;
+        bool _listenToExit;
+        public required Controller Controller { get; init; }
+        public bool Exit { get; private set; }
         public bool ListenToExit {
             get => _listenToExit;
             set {
                 _listenToExit = value;
-                if(value == true) {
+                if (value == true) {
                     Console.WriteLine("\nPress 'q' or 'ESC' to quit application.");
                 }
             }
         }
-        public bool IsAborted => AbortedByQ || AbortedByError;
+        public bool IsAborted => _abortedByUserInput || _abortedByError;
 
         public void AbortByError(Exception ex) {
-            AbortedByError = true;
-            Streaming.Stop();
+            _abortedByError = true;
+            Controller.Dispose();
             Console.WriteLine($"\nAborted streaming due to error: {ex.Message}");
         }
 
@@ -42,12 +37,13 @@ namespace TraSt_CSV {
         private void ListenForAbortKey() {
             while (true) {
                 var key = Console.ReadKey(intercept: true);
-                if ((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && Streaming.IsStreaming && ListenToExit == false && AbortedByQ == false) {
+                if ((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && Controller.Streamer != null && Controller.Streamer.IsStreaming && ListenToExit == false && _abortedByUserInput == false) {
                     Console.WriteLine("\n\nAborted streaming safely by pressing 'q or 'ESC'.");
-                    Streaming.Stop();
-                    AbortedByQ = true;
+                    Controller.Dispose();
+                    _abortedByUserInput = true;
                 }
-                if((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && ListenToExit) {
+                if ((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && ListenToExit) {
+                    Controller.Dispose();
                     Exit = true;
                 }
                 Thread.Sleep(100);
