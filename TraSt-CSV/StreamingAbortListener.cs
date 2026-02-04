@@ -21,7 +21,7 @@ namespace TraSt_CSV {
 
         public void AbortByError(Exception ex) {
             _abortedByError = true;
-            Controller.Dispose();
+            Controller.Streamer?.StopStreaming();
             Console.WriteLine($"\nAborted streaming due to error: {ex.Message}");
         }
 
@@ -39,11 +39,11 @@ namespace TraSt_CSV {
                 var key = Console.ReadKey(intercept: true);
                 if ((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && Controller.Streamer != null && Controller.Streamer.IsStreaming && ListenToExit == false && _abortedByUserInput == false) {
                     Console.WriteLine("\n\nAborted streaming safely by pressing 'q or 'ESC'.");
-                    Controller.Dispose();
                     _abortedByUserInput = true;
+                    Controller.Streamer?.StopStreaming();
                 }
                 if ((key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape) && ListenToExit) {
-                    Controller.Dispose();
+                    Controller.Streamer?.StopStreaming();
                     Exit = true;
                 }
                 Thread.Sleep(100);

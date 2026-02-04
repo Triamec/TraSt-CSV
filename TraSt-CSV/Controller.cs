@@ -18,8 +18,20 @@ namespace TraSt_CSV {
         }
 
         public void Dispose() {
-            Streamer?.StopStreaming();
+
+            if (Streamer != null) {
+                Streamer.StopStreaming();
+                var cnt = 0;
+                while (Streamer.IsStreaming && cnt++ < 20) {
+                    Thread.Sleep(100);
+                }
+
+                Streamer.Dispose();
+                Streamer = null;
+            }
+
             _system?.Dispose();
+            _system = null; 
         }
         public ITrajectoryStreamer? Streamer { get; private set; }
 
@@ -79,11 +91,11 @@ namespace TraSt_CSV {
                 }
             }
 
-            if (Streamer.IsStreaming && !_abortListener.IsAborted) {
+            if (!_abortListener.IsAborted && Streamer.IsStreaming) {
                 Console.WriteLine("\n\nWaiting for streaming to complete...");
             }
 
-            while (Streamer.IsStreaming && !_abortListener.IsAborted) {                                    // wait until the streaming is completed or aborted
+            while (!_abortListener.IsAborted && Streamer.IsStreaming) {                                    // wait until the streaming is completed or aborted
                 Console.Write(".");
                 Thread.Sleep(1000);
             }
