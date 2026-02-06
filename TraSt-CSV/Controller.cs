@@ -8,8 +8,8 @@ namespace TraSt_CSV {
         readonly double _streamRate;
         const string _filePath = "TraSt_TestCircle_50kHz_20s.csv";
         private readonly CsvParser _csvParser;
-        IMotionSystem19? _system;
-        IAxisGroup<IAxis19>? _axisGroup;
+        IMotionSystem? _system;
+        IAxisGroup<IAxis>? _axisGroup;
         StreamingAbortListener? _abortListener;
 
         public Controller() {
@@ -37,7 +37,7 @@ namespace TraSt_CSV {
 
         public async Task Initialize() {
             Console.WriteLine("\nConnect to System... ");
-            _system = await MotionSystem.Connect19();
+            _system = await MotionSystem.Connect();
             var allFoundAxes = _system.Axes;
             if (allFoundAxes.Count < _csvParser.columnsName.Count) {                                       // check if the number of axes found is less than the number of columns in the CSV file
                 Console.WriteLine($"\nOnly {allFoundAxes.Count} axes found, but the CSV-File requests to control {_csvParser.columnsName.Count} axes.");
