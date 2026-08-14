@@ -3,6 +3,8 @@ This C# console application demonstrates trajectory streaming (TraSt) for motion
 
 This example project illustrates how to use the TraSt feature of the TAM API and serves as a beginner-friendly introduction to basic trajectory streaming workflows. 
 
+** IMPORTANT NOTE: We are currently working on a standardized .csv format for TraSt, so the .csv's used in this example are subject to changes **
+
 ## What is Trajectory Streaming
 Trajectory streaming is a technique used to execute complex motion profiles in real time by separating path calculation from execution. 
 In this application, the motion path is precomputed and stored in a CSV file. 
